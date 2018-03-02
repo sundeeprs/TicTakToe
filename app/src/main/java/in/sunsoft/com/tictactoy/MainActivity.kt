@@ -1,9 +1,12 @@
 package `in`.sunsoft.com.tictactoy
 
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,10 +18,13 @@ class MainActivity : AppCompatActivity() {
     var player2= ArrayList<Int>()
     lateinit var butSelected: Button
     var winner=-1
+    lateinit var mediaPlayer: MediaPlayer
+    var buttonCount: Int = 9
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mediaPlayer = MediaPlayer.create(this,R.raw.win )
     }
 
 
@@ -59,13 +65,13 @@ class MainActivity : AppCompatActivity() {
         if(activePayer==1) {
             buttonSelected.text="X"
             buttonSelected.textSize=20.0f
-            buttonSelected.setBackgroundColor(Color.BLUE)
+            buttonSelected.setBackgroundColor(Color.CYAN)
             player1.add(cellId)
             activePayer=2
         } else {
             buttonSelected.text="0"
             buttonSelected.textSize=20.0f
-            buttonSelected.setBackgroundColor(Color.MAGENTA)
+            buttonSelected.setBackgroundColor(resources.getColor(R.color.geruavua))
             player2.add(cellId)
             activePayer=1
         }
@@ -78,93 +84,76 @@ class MainActivity : AppCompatActivity() {
         //row 1
         if(player1.contains(1) && player1.contains(2) && player1.contains(3)){
          winner=1
-        }
-
-        if(player2.contains(1) && player2.contains(2) && player2.contains(3)){
+        } else if(player2.contains(1) && player2.contains(2) && player2.contains(3)){
             winner=2
-        }
-
-        //row 2
-        if(player1.contains(4) && player1.contains(5) && player1.contains(6)){
+        } //row 2
+        else if(player1.contains(4) && player1.contains(5) && player1.contains(6)){
             winner=1
         }
-
-        if(player2.contains(4) && player2.contains(5) && player2.contains(6)){
+        else if(player2.contains(4) && player2.contains(5) && player2.contains(6)){
             winner=2
-        }
-
-        //row 3
-        if(player1.contains(7) && player1.contains(8) && player1.contains(9)){
+        } //row 3
+        else if(player1.contains(7) && player1.contains(8) && player1.contains(9)){
             winner=1
-        }
-
-        if(player2.contains(7) && player2.contains(8) && player2.contains(9)){
+        } else if(player2.contains(7) && player2.contains(8) && player2.contains(9)){
             winner=2
-        }
-
-        //col 1
-        if(player1.contains(1) && player1.contains(4) && player1.contains(7)){
+        } //col 1
+        else if(player1.contains(1) && player1.contains(4) && player1.contains(7)){
             winner=1
-        }
-
-        if(player2.contains(1) && player2.contains(4) && player2.contains(7)){
+        } else if(player2.contains(1) && player2.contains(4) && player2.contains(7)){
             winner=2
-        }
-
-        //col 2
-        if(player1.contains(2) && player1.contains(5) && player1.contains(8)){
+        } //col 2
+        else if(player1.contains(2) && player1.contains(5) && player1.contains(8)){
             winner=1
-        }
-
-        if(player2.contains(2) && player2.contains(5) && player2.contains(8)){
+        } else if(player2.contains(2) && player2.contains(5) && player2.contains(8)){
             winner=2
-        }
-
-        //col 3
-        if(player1.contains(3) && player1.contains(6) && player1.contains(9)){
+        } //col 3
+        else if(player1.contains(3) && player1.contains(6) && player1.contains(9)){
             winner=1
-        }
-
-        if(player2.contains(3) && player2.contains(6) && player2.contains(9)){
+        } else if(player2.contains(3) && player2.contains(6) && player2.contains(9)){
             winner=2
-        }
-
-        //diagonal 1
-        if(player1.contains(1) && player1.contains(5) && player1.contains(9)){
+        } //diagonal 1
+        else if(player1.contains(1) && player1.contains(5) && player1.contains(9)){
             winner=1
-        }
-
-        if(player2.contains(1) && player2.contains(5) && player2.contains(9)){
+        } else if(player2.contains(1) && player2.contains(5) && player2.contains(9)){
             winner=2
-        }
-
-        //diagonal 2
-        if(player1.contains(3) && player1.contains(5) && player1.contains(7)){
+        } //diagonal 2
+        else if(player1.contains(3) && player1.contains(5) && player1.contains(7)){
             winner=1
-        }
-
-        if(player2.contains(3) && player2.contains(5) && player2.contains(7)){
+        } else if(player2.contains(3) && player2.contains(5) && player2.contains(7)){
             winner=2
         }
 
+        print("Player1 size " +player1.size )
+        print("Player2 size " +player2.size )
         if(winner != -1) {
+
+            playsount()
             if(winner==1){
                 //Toast.makeText(this, "Winner is Player 1", Toast.LENGTH_LONG).show()
                 textView.text ="Player 1 Win!"
                 textView.visibility = View.VISIBLE
                 disableAllButton()
-                player1.clear()
-                player1.removeAll(player1)
+                if(!mediaPlayer.isPlaying)
+                    mediaPlayer.start()
+
             } else {
                 //Toast.makeText(this, "Winner is Player 2", Toast.LENGTH_LONG).show()
-                textView.text ="Player 2 Win!"
+                textView.text ="Palyer 2 Win!"
                 textView.visibility = View.VISIBLE
                 disableAllButton()
-                player2.clear()
-                player2.removeAll(player2)
+                if(!mediaPlayer.isPlaying)
+                    mediaPlayer.start()
+
             }
 
         }
+    }
+
+    private fun playsount() {
+        //TODO paly sound here
+        //mediaPlayer.p = MediaPlayer().playbackParams
+
     }
 
     private fun disableAllButton() {
@@ -179,42 +168,53 @@ class MainActivity : AppCompatActivity() {
         button9.isEnabled =false
     }
 
+    var buttonStr: String = ""
+    var button: Button? = null
     fun onRestartPressed(view: View) {
 
+        /*for(i: Int in buttonCount) {
+            button!!.id= (buttonStr+i).toInt()
+            button!!.setBackgroundColor(resources.getColor(R.color.white))
+            button!!.text = ""
+            button!!.isEnabled=true
+        }*/
 
-        button1.setBackgroundColor(Color.GRAY)
+        mediaPlayer.pause()
+        player1.removeAll(player1)
+        player2.removeAll(player2)
+        button1.setBackgroundColor(resources.getColor(R.color.white))
         button1.text = ""
         button1.isEnabled=true
 
-        button2.setBackgroundColor(Color.GRAY)
+        button2.setBackgroundColor(resources.getColor(R.color.white))
         button2.text = ""
         button2.isEnabled=true
 
-        button3.setBackgroundColor(Color.GRAY)
+        button3.setBackgroundColor(resources.getColor(R.color.white))
         button3.text = ""
         button3.isEnabled=true
 
-        button4.setBackgroundColor(Color.GRAY)
+        button4.setBackgroundColor(resources.getColor(R.color.white))
         button4.text = ""
         button4.isEnabled=true
 
-        button5.setBackgroundColor(Color.GRAY)
+        button5.setBackgroundColor(resources.getColor(R.color.white))
         button5.text = ""
         button5.isEnabled=true
 
-        button6.setBackgroundColor(Color.GRAY)
+        button6.setBackgroundColor(resources.getColor(R.color.white))
         button6.text = ""
         button6.isEnabled=true
 
-        button7.setBackgroundColor(Color.GRAY)
+        button7.setBackgroundColor(resources.getColor(R.color.white))
         button7.text = ""
         button7.isEnabled=true
 
-        button8.setBackgroundColor(Color.GRAY)
+        button8.setBackgroundColor(resources.getColor(R.color.white))
         button8.text = ""
         button8.isEnabled=true
 
-        button9.setBackgroundColor(Color.GRAY)
+        button9.setBackgroundColor(resources.getColor(R.color.white))
         button9.text = ""
         button9.isEnabled=true
 
